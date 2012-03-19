@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>
+        </title>
+        <link rel="stylesheet" href="css/jquery.mobile-1.0.1.min.css" />
+        <link rel="stylesheet" href="css/jquery.mobile.structure-1.0.1.min.css" />
+        <link rel="stylesheet" href="css/jquery.mobile.simpledialog.min.css" />
+        <style>
+            /* App custom styles */
+        </style>
+        <script src="javascript/jquery.min.js"></script>
+        <script src="javascript/jquery.mobile-1.0.1.min.js"></script>
+        <script src="javascript/jquery.mobile.simpledialog2.min.js"></script>
+        <script src="javascript/js-model-0.11.0.min.js"></script>
+        <script src="javascript/powerModel.js"></script>
+        <script src="javascript/init.js"></script>
+        <script src="javascript/d20parser.js"></script>
+        <script src="javascript/pageAddEditController.js"></script>
+        <script src="javascript/pageViewPowersController.js"></script>
+        <script src="javascript/pagePowerViewController.js"></script>
+    </head>
+    <body>
+        <div data-role="page" id="pageViewPowers">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    View Powers
+                </h3>
+            </div>
+            <div data-role="content">
+                <div data-role="navbar" data-iconpos="top">
+                    <ul>
+                        <li>
+                            <a href="#pageViewPowers" data-theme="" data-icon="" class="ui-btn-active">
+                                View Powers
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#pageAddEdit" data-theme="" data-icon="">
+                                Add Power
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                    <li data-role="list-divider" role="heading">
+                        Filter
+                    </li>
+                    <li data-theme="c">
+                        <a id="filterAll" href="#pageViewPowers" data-transition="slide">
+                            All
+                        </a>
+                    </li>
+                    <li data-theme="c">
+                        <a id="filterUsed" href="#pageViewPowers" data-transition="slide">
+                            Used
+                        </a>
+                    </li>
+                    <li data-theme="c">
+                        <a id="filterUnused" href="#pageViewPowers" data-transition="slide">
+                            Unused
+                        </a>
+                    </li>
+                </ul>
+                <div data-role="collapsible-set" data-theme="" data-content-theme="">
+                    <div data-role="collapsible" data-collapsed="false">
+                        <h3>
+                            <div id="powersListTitle">Powers</div>
+                        </h3>
+                        <div id="powersList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-role="page" id="pageAddEdit">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    Add/Edit Power
+                </h3>
+            </div>
+            <div data-role="content">
+                <div data-role="navbar" data-iconpos="left">
+                    <ul>
+                        <li>
+                            <a href="#pageViewPowers" data-theme="" data-icon="">
+                                View Powers
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#pageAddEdit" data-theme="" data-icon="" class="ui-btn-active">
+                                Add Power
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <label for="addEditNameOfPower">
+                            Name
+                        </label>
+                        <input id="addEditNameOfPower" placeholder="Name of power" value="" type="text" />
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <label for="addEditVS">
+                            VS
+                        </label>
+                        <input id="addEditVS" placeholder="AC" value="" type="text" />
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <label for="addEditToHit">
+                            To Hit
+                        </label>
+                        <input id="addEditToHit" placeholder="11" value="" type="text" />
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <label for="addEditDamage">
+                            Damage
+                        </label>
+                        <input id="addEditDamage" placeholder="2d8+4" value="" type="text" />
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <label for="addEditDescription">
+                            Extras
+                        </label>
+                        <textarea id="addEditDescription" placeholder="Stuns enemy until the start of your next turn">
+                        </textarea>
+                    </fieldset>
+                </div>
+                <div data-role="collapsible-set" data-theme="" data-content-theme="">
+                    <div id="contitionalDamageSet" data-role="collapsible" data-collapsed="false">
+                        <h3>
+                            Conditional Damage
+                        </h3>
+                        <a id="btnAddConditionalDamage" data-inline="true" data-role="button" data-transition="fade" href="#pageAddEdit" data-icon="plus" data-iconpos="left">
+                            Add Damage
+                        </a>
+                        <div id="conditionalDamageControls"></div>
+                    </div>
+                </div>
+                <a id="btnSavePower" data-role="button" data-transition="fade" href="#pageAddEdit" data-icon="star" data-iconpos="left">
+                    Save Power
+                </a>
+                <a id="btnDeletePower" data-role="button" data-inline="true" data-icon="delete">Delete Power</a>
+            </div>
+        </div>
+        <div data-role="page" id="pagePowerView">
+            <div data-theme="a" data-role="header">
+                <h3 id="powerName">
+                    Name of Power
+                </h3>
+            </div>
+            <div data-role="content">
+                <a id="btnEditPower" data-role="button" data-transition="slide" href="#pageAddEdit">Edit Power</a>
+                <p id="powerDescription">
+                    Description of the power
+                </p>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <label for="toggleswitch1">
+                            Power Used:
+                        </label>
+                        <select name="toggleswitch1" id="powerUsed" data-theme="a" data-role="slider">
+                            <option value="unused">
+                                Unused
+                            </option>
+                            <option value="used">
+                                Used
+                            </option>
+                        </select>
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset id="viewConditionalDamage" data-role="controlgroup" data-type="vertical">
+                        <legend>
+                            Conditional Damage:
+                        </legend>
+                        <input name="checkbox3" id="checkbox3" type="checkbox" />
+                        <label for="checkbox3">
+                            Sneak Attack  ::  2d8+3
+                        </label>
+                        <input name="checkbox4" id="checkbox4" type="checkbox" />
+                        <label for="checkbox4">
+                            Attack 2 ::  +1
+                        </label>
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="horizontal">
+                        <legend>
+                            Roll Type
+                        </legend>
+                        <input name="rollType" id="radio1" value="toHit" type="radio" />
+                        <label for="radio1">
+                            To Hit
+                        </label>
+                        <input name="rollType" id="radio2" value="damage" type="radio" />
+                        <label for="radio2">
+                            Damage
+                        </label>
+                    </fieldset>
+                </div>
+                <p id="rollTypeText">
+                    To Hit:  1d20+11
+                </p>
+                <a id="btnRoll" data-role="button" data-inline="true" data-transition="fade" href="#pagePowerView">
+                    Roll!
+                </a>
+                <h2 id="rollValueText">
+                    28  VS  AC
+                </h2>
+            </div>
+        </div>
+        <script>
+            //App custom javascript
+        </script>
+    </body>
+</html>
