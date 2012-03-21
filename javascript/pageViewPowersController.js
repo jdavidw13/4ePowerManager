@@ -29,6 +29,14 @@ var Controllers = (function(controllers) {
                 return used == 'unused' || !used;
             }).each(appendPowers);
         }
+        else if ('At-Will' == filter
+                || 'Encounter' == filter
+                || 'Daily' == filter) {
+            Power.select(function() {
+                var powerType = this.attr('powerType');
+                return filter == powerType;
+            }).each(appendPowers);
+        }
         if (filter) {
             var title = $('#powersListTitle').html();
             title += ' - '+filter;
@@ -50,6 +58,9 @@ $(function() {
     $('#filterAll').click(clickFunc);
     $('#filterUsed').click(clickFunc);
     $('#filterUnused').click(clickFunc);
+    $('#filterAtWill').click(clickFunc);
+    $('#filterEncounter').click(clickFunc);
+    $('#filterDaily').click(clickFunc);
     $('#pageViewPowers').live('pageshow', function() {
         Controllers.viewPowers.pageShow();
     });

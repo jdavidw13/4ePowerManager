@@ -10,6 +10,7 @@ var Controllers = (function(controllers) {
         $('#addEditToHit').val('');
         $('#addEditDamage').val('');
         $('#addEditDescription').val('');
+        $('input[name="addEditPowerType"]:checked').attr('checked', false).next('label').removeClass('ui-btn-active');
     };
     c.newPower = function() {
         pageAddEdit.currentPower = Power.createNew();
@@ -36,6 +37,8 @@ var Controllers = (function(controllers) {
         $('#addEditToHit').val(power.attr('toHit'));
         $('#addEditDamage').val(power.attr('damage'));
         $('#addEditDescription').val(power.attr('description'));
+        $('#addEditPowerType').val(power.attr('powerType'));
+        $('input[name="addEditPowerType"][value="'+power.attr('powerType')+'"]').attr('checked', true).next('label').addClass('ui-btn-active');
 
         var conditionalDamage = power.attr('conditionalDamage');
         if (conditionalDamage != null) {
@@ -75,6 +78,7 @@ var Controllers = (function(controllers) {
         p.attr('toHit', $('#addEditToHit').val());
         p.attr('damage', $('#addEditDamage').val());
         p.attr('description', $('#addEditDescription').val());
+        p.attr('powerType', $('input[name="addEditPowerType"]:checked').val());
         $('#conditionalDamageControls').children().children(':input').each(function() {
             var id = $(this).attr('id');
             var damageSplit = id.split('addDamageDamage');

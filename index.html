@@ -44,26 +44,48 @@
                         </li>
                     </ul>
                 </div>
-                <ul data-role="listview" data-divider-theme="b" data-inset="true">
-                    <li data-role="list-divider" role="heading">
-                        Filter
-                    </li>
-                    <li data-theme="c">
-                        <a id="filterAll" href="#pageViewPowers" data-transition="slide">
-                            All
-                        </a>
-                    </li>
-                    <li data-theme="c">
-                        <a id="filterUsed" href="#pageViewPowers" data-transition="slide">
-                            Used
-                        </a>
-                    </li>
-                    <li data-theme="c">
-                        <a id="filterUnused" href="#pageViewPowers" data-transition="slide">
-                            Unused
-                        </a>
-                    </li>
-                </ul>
+                <div data-role="collapsible-set" data-theme="" data-content-theme="">
+                    <div data-role="collapsible" data-collapsed="false">
+                        <h3>
+                            <div id="filtersListTitle">Filters</div>
+                        </h3>
+                        <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                            <li data-role="list-divider" role="heading">
+                                Filter
+                            </li>
+                            <li data-theme="c">
+                                <a id="filterAll" href="#pageViewPowers" data-transition="slide">
+                                    All
+                                </a>
+                            </li>
+                            <li data-theme="c">
+                                <a id="filterUsed" href="#pageViewPowers" data-transition="slide">
+                                    Used
+                                </a>
+                            </li>
+                            <li data-theme="c">
+                                <a id="filterUnused" href="#pageViewPowers" data-transition="slide">
+                                    Unused
+                                </a>
+                            </li>
+                            <li data-theme="c">
+                                <a id="filterAtWill" href="#pageViewPowers" data-transition="slide">
+                                    At-Will
+                                </a>
+                            </li>
+                            <li data-theme="c">
+                                <a id="filterEncounter" href="#pageViewPowers" data-transition="slide">
+                                    Encounter
+                                </a>
+                            </li>
+                            <li data-theme="c">
+                                <a id="filterDaily" href="#pageViewPowers" data-transition="slide">
+                                    Daily
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                 <div data-role="collapsible-set" data-theme="" data-content-theme="">
                     <div data-role="collapsible" data-collapsed="false">
                         <h3>
@@ -134,6 +156,25 @@
                         </label>
                         <textarea id="addEditDescription" placeholder="Stuns enemy until the start of your next turn">
                         </textarea>
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="horizontal">
+                        <legend>
+                            Power Type
+                        </legend>
+                        <input name="addEditPowerType" id="addEditPowerTypeAtWill" value="At-Will" type="radio" />
+                        <label for="addEditPowerTypeAtWill">
+                            At-Will
+                        </label>
+                        <input name="addEditPowerType" id="addEditPowerTypeEncounter" value="Encounter" type="radio" />
+                        <label for="addEditPowerTypeEncounter">
+                            Encounter
+                        </label>
+                        <input name="addEditPowerType" id="addEditPowerTypeDaily" value="Daily" type="radio" />
+                        <label for="addEditPowerTypeDaily">
+                            Daily
+                        </label>
                     </fieldset>
                 </div>
                 <div data-role="collapsible-set" data-theme="" data-content-theme="">
