@@ -22,11 +22,17 @@ var Controllers = (function(controllers) {
                 html += '<label for="chbxConditionalDamage'+i+'">'+damage.name+'  ::  '+damage.damage+'</label>';
                 $('#viewConditionalDamage').append(html);
                 $('#'+chbxName).data('damage', damage.damage);
+                $('#'+chbxName).click(function() {
+                    setDamageRangeText();
+                    pagePowerView.setRollType(rollType);
+                });
             }
         }
 
         $('#rollTypeText').html('');
         $('#rollValueText').html('');
+
+        setDamageRangeText();
 
         $('#pagePowerView').trigger('create');
     };
@@ -48,6 +54,12 @@ var Controllers = (function(controllers) {
             }
         });
         return total;
+    };
+    function setDamageRangeText() {
+        var damage = getDamage();
+        var min = parsePrecedence(damage, 'min');
+        var max = parsePrecedence(damage, 'max');
+        $('#damageRangeText').html(min.total + ' - ' + max.total);
     };
     pagePowerView.setRollType = function(type) {
         rollType = type;
@@ -82,7 +94,7 @@ var Controllers = (function(controllers) {
             else {
                 rollText += '+'+bonus;
             }
-            var rollObj = parse(rollText);
+            var rollObj = parsePrecedence(rollText);
             if (rollObj.rolls[0] == 20) {
                 $('#rollValueText').html('NATURAL 20!!! (' + rollObj.total +')');
             }
@@ -92,7 +104,7 @@ var Controllers = (function(controllers) {
         }
         else if ('damage' == rollType) {
             rollText = getDamage();
-            var rollObj = parse(rollText);
+            var rollObj = parsePrecedence(rollText);
             $('#rollValueText').html(rollObj.total);
         }
         $('#rollValueText').trigger('create');

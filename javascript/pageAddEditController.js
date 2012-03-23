@@ -97,6 +97,17 @@ var Controllers = (function(controllers) {
             PowerId.saveNextId();
             saveNextId = false;
         }
+        $('<div>').simpledialog2({
+            mode: 'button',
+            headerText: 'Power Saved',
+            headerClose: false,
+            buttonPrompt: 'The power has been saved!',
+            buttons: {
+                'Ok': {
+                    click: function() {}
+                }
+            }            
+        });
     };
     c.deletePower = function() {
         $('<div>').simpledialog2({
