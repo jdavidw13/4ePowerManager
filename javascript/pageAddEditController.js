@@ -12,6 +12,43 @@ var Controllers = (function(controllers) {
         $('#addEditDescription').val('');
         $('input[name="addEditPowerType"]:checked').attr('checked', false).next('label').removeClass('ui-btn-active');
     };
+    var addConditionalDamageKeypressEvent = function(inputElement) {
+        var lastTime = null;
+        var timerId = null;
+        var doPress = function() {
+            var currentTime = new Date().getTime();
+            if (lastTime != null) {
+                if (currentTime - lastTime < 1000) return;
+            }
+            var words = getWords(additionalDamageTrie, $(inputElement).val().toLowerCase());
+            if (words.length > 0) {
+                var buttons = {};
+                for (var i = 0; i < words.length; i++) {
+                    buttons[words[i]] = {
+                        click: function(e, word, damageId) {
+                            var damage = getProperty(additionalDamageTrie, word, 'damage');
+                            $(inputElement).val(word);
+                            $('#addDamageDamage'+damageId).val(damage);
+                        },
+                        args: [words[i], parseInt($(inputElement).attr('id').replace('addDamageName', ''))]
+                    };
+                }
+                $('<div>').simpledialog2({
+                    mode: 'button',
+                    headerText: 'Damage...',
+                    headerClose: true,
+                    buttons: buttons
+                });
+            }
+        };
+        $(inputElement).keypress(function() {
+            lastTime = new Date().getTime();
+            if (timerId != null) {
+                clearTimeout(timerId);
+            }
+            timerId = setTimeout(function(){ doPress(); }, 1000);
+        });
+    };
     c.newPower = function() {
         pageAddEdit.currentPower = Power.createNew();
         clearFields();
@@ -69,6 +106,7 @@ var Controllers = (function(controllers) {
         html += '<label for="addDamageDamage' + id + '">Damage</label>';
         html += '<input type="text" id="addDamageDamage' + id +'"/></fieldset>';
         $('#conditionalDamageControls').append(html);
+        addConditionalDamageKeypressEvent($('#addDamageName'+id));
         $('#contitionalDamageSet').trigger('create');
     };
     c.savePower = function() {
@@ -93,6 +131,15 @@ var Controllers = (function(controllers) {
             p.attr('conditionalDamage', damageArray);
         });
         p.save();
+        var damageArray = p.attr('conditionalDamage');
+        if (damageArray) {
+            for (var i = 0; i < damageArray.length; i++) {
+                var words = getWords(additionalDamageTrie, damageArray[i].name);
+                if (words.length < 1) {
+                    setProperty(additionalDamageTrie, damageArray[i].name.toLowerCase(), 'damage', damageArray[i].damage);
+                }
+            }
+        }
         if (saveNextId) {
             PowerId.saveNextId();
             saveNextId = false;
