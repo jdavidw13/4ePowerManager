@@ -1,4 +1,25 @@
 var Controllers = (function(controllers) {
+    var toHitCollapseTemplate = '' +
+        '<div data-role="collapsible" data-collapsed="false" data-content-theme="d">' +
+            '<h3>' +
+                'ToHit: {{toHitText}}' +
+            '</h3>' +
+            '<a id="btnRoll" data-role="button" data-theme="a" href="#">' +
+                'Roll' +
+            '</a>' +
+            '<div id="checkboxes5" data-role="fieldcontain">' +
+                '<fieldset data-role="controlgroup" data-type="vertical">' +
+                    '<legend>' +
+                        'Modifiers' +
+                    '</legend>' +
+                    '<input id="checkbox5" name="" type="checkbox">' +
+                    '<label for="checkbox5">' +
+                        'Checkbox' +
+                    '</label>' +
+                '</fieldset>' +
+            '</div>' +
+        '</div>'; 
+
     var pagePowerView = {};
     var rollType = null;
     pagePowerView.displayPower = function(id) {
@@ -8,9 +29,27 @@ var Controllers = (function(controllers) {
 
         $('#powerDescription').html(power.attr('description'));
 
-        var powerUsed = power.attr('powerUsed') || 'unused';
-        $('#powerUsed').val(powerUsed);
+        //var powerUsed = power.attr('powerUsed') || 'unused';
+        var powerUsed = power.attr('powerUsed');
+        $('#powerUsed').prop('checked', powerUsed).checkboxradio('refresh');
 
+        var toHit = power.attr('toHit');
+        var toHitVs = power.attr('vs');
+        var toHitText = '1d20 ';
+        if (toHit > 0) {
+            toHitText += '+ ' + toHit + ' ';
+        }
+        else if (toHit < 0) {
+            toHitText -= '- ' + toHit +' ';
+        }
+        toHitText += 'vs ' + toHitVs;
+
+        toHitText = Mustache.render(toHitCollapseTemplate, {toHitText: toHitText});
+        $('#toHitCollapsable').html(toHitText);
+
+        $('#pagePowerView').trigger('create');
+
+        /*
         var conditionalDamage = power.attr('conditionalDamage');
         $('#viewConditionalDamage').children().remove();
         if (conditionalDamage != null && conditionalDamage.length > 0) {
@@ -34,6 +73,7 @@ var Controllers = (function(controllers) {
 
         setDamageRangeText();
 
+        */
         $('#pagePowerView').trigger('create');
     };
     function getDamage() {

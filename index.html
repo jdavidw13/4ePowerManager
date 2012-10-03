@@ -19,6 +19,7 @@
         <script src="javascript/init.js"></script>
         <script src="javascript/jstrie.js"></script>
         <script src="javascript/d20parser.js"></script>
+        <script src="javascript/mustache.js"></script>
         <script src="javascript/pageAddEditController.js"></script>
         <script src="javascript/pageViewPowersController.js"></script>
         <script src="javascript/pagePowerViewController.js"></script>
@@ -195,7 +196,39 @@
                 <a id="btnDeletePower" data-role="button" data-inline="true" data-icon="delete">Delete Power</a>
             </div>
         </div>
+
+
         <div data-role="page" id="pagePowerView">
+            <div data-theme="a" data-role="header">
+                <h3 id="powerName">
+                    Header
+                </h3>
+            </div>
+
+            <div data-role="content">
+                <div id="checkboxes4" data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="vertical">
+                        <legend></legend>
+                        <input id="powerUsed" name="powerUsed" type="checkbox">
+                        <label for="powerUsed">
+                            Power Used
+                        </label>
+                    </fieldset>
+                </div>
+                <div>
+                    <p id="powerDescription"></p>
+                </div>
+                <div data-role="collapsible-set" id="toHitCollapsable">
+                </div>
+                <div data-role="collapsible-set">
+                    <div data-role="collapsible" data-collapsed="false">
+                        <h3>
+                            Damage:
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <!--
             <div data-theme="a" data-role="header">
                 <h3 id="powerName">
                     Name of Power
@@ -266,6 +299,7 @@
                 </h2>
             </div>
         </div>
+        -->
         <script>
             //App custom javascript
         </script>
