@@ -20,6 +20,7 @@
         <script src="javascript/jstrie.js"></script>
         <script src="javascript/d20parser.js"></script>
         <script src="javascript/mustache.js"></script>
+        <script src="javascript/underscore-min.js"></script>
         <script src="javascript/pageAddEditController.js"></script>
         <script src="javascript/pageViewPowersController.js"></script>
         <script src="javascript/pagePowerViewController.js"></script>
@@ -216,15 +217,8 @@
                 <div>
                     <p id="powerDescription"></p>
                 </div>
-                <div data-role="collapsible-set" id="toHitCollapsable">
-                </div>
-                <div data-role="collapsible-set">
-                    <div data-role="collapsible" data-collapsed="false">
-                        <h3>
-                            Damage:
-                        </h3>
-                    </div>
-                </div>
+                <div data-role="collapsible-set" id="toHitCollapsable"></div>
+                <div data-role="collapsible-set" id="damageCollapsable"></div>
             </div>
             <!--
             <div data-theme="a" data-role="header">

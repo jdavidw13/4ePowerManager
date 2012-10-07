@@ -4,26 +4,41 @@ var Controllers = (function(controllers) {
             '<h3>' +
                 'ToHit: {{toHitText}}' +
             '</h3>' +
-            '<a id="btnRoll" data-role="button" data-theme="a" href="#">' +
+            '<a id="btnRollToHit" data-role="button" data-theme="a" href="#">' +
+                'Roll ToHit' +
+            '</a>' +
+        '</div>'; 
+
+    var damageCollapseTemplate = '' +
+        '<div data-role="collapsible" data-collapsed="false" data-content-theme="d">' +
+            '<h3 id="damageRangeText">' +
+                '{{damageRangeText}}' +
+            '</h3>' +
+            '<a id="btnRollDamage" data-role="button" data-theme="a" href="#">' +
                 'Roll' +
             '</a>' +
             '<div id="checkboxes5" data-role="fieldcontain">' +
                 '<fieldset data-role="controlgroup" data-type="vertical">' +
                     '<legend>' +
-                        'Modifiers' +
+                        'Conditional Damage:' +
                     '</legend>' +
-                    '<input id="checkbox5" name="" type="checkbox">' +
-                    '<label for="checkbox5">' +
-                        'Checkbox' +
+                    '{{#conditionalDamage}}' +
+                    '<input id="{{name}}" name="chbxConditionalDamage_{{name}}" type="checkbox">' +
+                    '<label for="{{name}}">' +
+                        '{{name}} :: {{damage}}' +
                     '</label>' +
+                    '{{/conditionalDamage}}' +
                 '</fieldset>' +
             '</div>' +
         '</div>'; 
 
     var pagePowerView = {};
     var rollType = null;
+    var currentPower = null;
+
     pagePowerView.displayPower = function(id) {
-        var power = Power.find(id);
+        currentPower = Power.find(id);
+        var power = currentPower;
         pagePowerView.currentPower = power;
         $('#powerName').html(power.attr('name'));
 
@@ -46,6 +61,10 @@ var Controllers = (function(controllers) {
 
         toHitText = Mustache.render(toHitCollapseTemplate, {toHitText: toHitText});
         $('#toHitCollapsable').html(toHitText);
+
+        var damageTemplate = Mustache.render(damageCollapseTemplate, {damageRangeText: getDamageRangeText(), conditionalDamage: power.attr('conditionalDamage')});
+        $('#damageCollapsable').html(damageTemplate);
+        $conditionalDamage = $('input[name*="chbxConditionalDamage"]');
 
         $('#pagePowerView').trigger('create');
 
@@ -76,10 +95,18 @@ var Controllers = (function(controllers) {
         */
         $('#pagePowerView').trigger('create');
     };
+    function getConditionalDamageValue(damageName) {
+        var condDamage = _.find(currentPower.attr('conditionalDamage'), function(damage) {
+            return damageName == damage.name;
+        });
+        return condDamage.damage;
+    };
     function getDamage() {
-        var total = pagePowerView.currentPower.attr('damage');
+        var total = currentPower.attr('damage');
+        //var total = pagePowerView.currentPower.attr('damage');
         $('input[name*="chbxConditionalDamage"]:checked').each(function() {
-            var value = $(this).data('damage');
+            var value = getConditionalDamageValue($(this).attr('id'));
+            //var value = $(this).data('damage');
             if (value.indexOf('d') == -1) {
                 var valInt = parseInt(value);
                 if (valInt < 0) {
@@ -95,11 +122,11 @@ var Controllers = (function(controllers) {
         });
         return total;
     };
-    function setDamageRangeText() {
+    function getDamageRangeText() {
         var damage = getDamage();
         var min = parsePrecedence(damage, 'min');
         var max = parsePrecedence(damage, 'max');
-        $('#damageRangeText').html(min.total + ' - ' + max.total);
+        return min.total + ' - ' + max.total;
     };
     pagePowerView.setRollType = function(type) {
         rollType = type;
