@@ -14,8 +14,9 @@ var Controllers = (function(controllers) {
             '<h3 id="damageRangeText">' +
                 '{{damageRangeText}}' +
             '</h3>' +
+            '<p style="font-weight: bold">Base Damage: {{baseDamage}}</p>' +
             '<a id="btnRollDamage" data-role="button" data-theme="a" href="#">' +
-                'Roll' +
+                'Roll Damage' +
             '</a>' +
             '<div id="checkboxes5" data-role="fieldcontain">' +
                 '<fieldset data-role="controlgroup" data-type="vertical">' +
@@ -35,11 +36,13 @@ var Controllers = (function(controllers) {
     var pagePowerView = {};
     var rollType = null;
     var currentPower = null;
+    var $conditionalDamage = null;
 
     pagePowerView.displayPower = function(id) {
-        currentPower = Power.find(id);
-        var power = currentPower;
-        pagePowerView.currentPower = power;
+        var power = Power.find(id);
+        if (power != null) {
+            currentPower = power;
+        }
         $('#powerName').html(power.attr('name'));
 
         $('#powerDescription').html(power.attr('description'));
@@ -48,23 +51,25 @@ var Controllers = (function(controllers) {
         var powerUsed = power.attr('powerUsed');
         $('#powerUsed').prop('checked', powerUsed).checkboxradio('refresh');
 
-        var toHit = power.attr('toHit');
-        var toHitVs = power.attr('vs');
-        var toHitText = '1d20 ';
-        if (toHit > 0) {
-            toHitText += '+ ' + toHit + ' ';
-        }
-        else if (toHit < 0) {
-            toHitText -= '- ' + toHit +' ';
-        }
-        toHitText += 'vs ' + toHitVs;
-
-        toHitText = Mustache.render(toHitCollapseTemplate, {toHitText: toHitText});
+        var toHitText = Mustache.render(toHitCollapseTemplate, {toHitText: getToHitText()});
         $('#toHitCollapsable').html(toHitText);
+        $('#btnRollToHit').click(function() {
+            rollToHit();
+        });
 
-        var damageTemplate = Mustache.render(damageCollapseTemplate, {damageRangeText: getDamageRangeText(), conditionalDamage: power.attr('conditionalDamage')});
+        var damageTemplate = Mustache.render(damageCollapseTemplate, {
+            damageRangeText: 'Damage Range: '+getDamageRangeText(), 
+            conditionalDamage: power.attr('conditionalDamage'),
+            baseDamage: power.attr('damage')
+        });
         $('#damageCollapsable').html(damageTemplate);
         $conditionalDamage = $('input[name*="chbxConditionalDamage"]');
+        $conditionalDamage.change(function() {
+            conditionalDamageChanged();
+        });
+        $('#btnRollDamage').click(function() {
+            rollDamage();
+        });
 
         $('#pagePowerView').trigger('create');
 
@@ -93,7 +98,6 @@ var Controllers = (function(controllers) {
         setDamageRangeText();
 
         */
-        $('#pagePowerView').trigger('create');
     };
     function getConditionalDamageValue(damageName) {
         var condDamage = _.find(currentPower.attr('conditionalDamage'), function(damage) {
@@ -103,10 +107,8 @@ var Controllers = (function(controllers) {
     };
     function getDamage() {
         var total = currentPower.attr('damage');
-        //var total = pagePowerView.currentPower.attr('damage');
         $('input[name*="chbxConditionalDamage"]:checked').each(function() {
             var value = getConditionalDamageValue($(this).attr('id'));
-            //var value = $(this).data('damage');
             if (value.indexOf('d') == -1) {
                 var valInt = parseInt(value);
                 if (valInt < 0) {
@@ -127,6 +129,59 @@ var Controllers = (function(controllers) {
         var min = parsePrecedence(damage, 'min');
         var max = parsePrecedence(damage, 'max');
         return min.total + ' - ' + max.total;
+    };
+    var getToHitRoll = function() {
+        var toHit = currentPower.attr('toHit');
+        var toHitText = '1d20 ';
+        if (toHit > 0) {
+            toHitText += '+ ' + toHit;
+        }
+        else if (toHit < 0) {
+            toHitText -= '- ' + toHit;
+        }
+
+        return toHitText;
+    };
+    var getToHitText = function() {
+        var vs = currentPower.attr('vs');
+        var text = getToHitRoll();
+        text += ' vs '+vs;
+        return text;
+    };
+    var conditionalDamageChanged = function() {
+        var damageText = 'Damage Range: '+getDamageRangeText();
+        $('#damageRangeText span.ui-btn-text').html(damageText);
+    };
+    var rollToHit = function() {
+        var roll = parsePrecedence(getToHitRoll());
+        var vs = currentPower.attr('vs');
+
+        var content = '<div align="center">';
+        if (roll.rolls[0] == 20) {
+            content += '<h2>Natural 20!</h2>';
+        }
+        content += '<h3>'+roll.total+' vs '+vs+'</h3></div>';
+        content += '<a rel="close" data-role="button" href="#">Close</a>';
+
+        $('<div>').simpledialog2({
+            mode: 'blank',
+            headerText: 'ToHit Roll',
+            headerClose: true,
+            blankContent: content
+        });
+    };
+    var rollDamage = function() {
+        var damage = getDamage();
+        var roll = parsePrecedence(damage);
+
+        var content = '<div align="center"><h3>'+roll.total+'</h3></div>';
+        content += '<a rel="close" data-role="button" href="#">Close</a>';
+        $('<div>').simpledialog2({
+            mode: 'blank',
+            headerText: 'Damage Roll',
+            headerClose: true,
+            blankContent: content
+        });
     };
     pagePowerView.setRollType = function(type) {
         rollType = type;
