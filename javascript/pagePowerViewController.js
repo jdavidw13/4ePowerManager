@@ -183,61 +183,14 @@ var Controllers = (function(controllers) {
             blankContent: content
         });
     };
-    pagePowerView.setRollType = function(type) {
-        rollType = type;
-        if ('toHit' == type) {
-            var bonus = parseInt(pagePowerView.currentPower.attr('toHit'));
-            var roll = '1d20 ';
-            if (bonus < 0) {
-                roll += '- ' + Math.abs(bonus);
-            }
-            else {
-                roll += '+ ' + bonus;
-            }
-            $('#rollTypeText').html(roll+' VS '+pagePowerView.currentPower.attr('vs'));
-        }
-        else if ('damage' == type) {
-            $('#rollTypeText').html(getDamage());
-        }
-
-        $('#rollTypeText').trigger('create');
-    };
-    pagePowerView.roll = function() {
-        if (rollType == null) {
-            return;
-        }
-        var rollText = '';
-        if ('toHit' == rollType) {
-            rollText = '1d20';
-            var bonus = parseInt(pagePowerView.currentPower.attr('toHit') || '0');
-            if (bonus < 0) {
-                rollText += '-'+Math.abs(bonus);
-            }
-            else {
-                rollText += '+'+bonus;
-            }
-            var rollObj = parsePrecedence(rollText);
-            if (rollObj.rolls[0] == 20) {
-                $('#rollValueText').html('NATURAL 20!!! (' + rollObj.total +')');
-            }
-            else {
-                $('#rollValueText').html(rollObj.total + ' VS ' + pagePowerView.currentPower.attr('vs'));
-            }
-        }
-        else if ('damage' == rollType) {
-            rollText = getDamage();
-            var rollObj = parsePrecedence(rollText);
-            $('#rollValueText').html(rollObj.total);
-        }
-        $('#rollValueText').trigger('create');
-    };
     pagePowerView.setPowerUsed = function(val) {
-        var power = pagePowerView.currentPower;
+        var power = currentPower;
         power.attr('powerUsed', val);
         power.save();
     };
     pagePowerView.editPower = function() {
-        $('#pageAddEdit').data('id', pagePowerView.currentPower.attr('id'));
+        $('#pageAddEdit').data('id', currentPower.attr('id'));
+        $.mobile.changePage('#pageAddEdit');
     };
 
     controllers.pagePowerView = pagePowerView;
@@ -245,20 +198,16 @@ var Controllers = (function(controllers) {
 }(Controllers || {}));
 
 $(function() {
+    $('#pagePowerView').live('pageinit', function() {
+        $('#powerUsed').change(function() {
+            Controllers.pagePowerView.setPowerUsed($(this).is(':checked'));
+        });
+        $('#btnEditPower').click(function() {
+            Controllers.pagePowerView.editPower();
+        });
+    });
     $('#pagePowerView').live('pageshow', function() {
         var id = $('#pagePowerView').data('id');
         Controllers.pagePowerView.displayPower(id);
-    });
-    $('input[name="rollType"]').click(function() {
-        Controllers.pagePowerView.setRollType($(this).val());
-    });
-    $('#btnRoll').click(function() {
-        Controllers.pagePowerView.roll();
-    });
-    $('#powerUsed').change(function() {
-        Controllers.pagePowerView.setPowerUsed($(this).val());
-    });
-    $('#btnEditPower').click(function() {
-        Controllers.pagePowerView.editPower();
     });
 });
