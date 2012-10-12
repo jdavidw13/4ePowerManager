@@ -1,10 +1,24 @@
 var Controllers = (function(controllers) {
+    var headerTemplate = '' +
+        '<div data-role="header" id="headerbar" data-theme="{{swatch}}" align="center">' +
+            '<h3 id="powerName">{{powerName}}</h3>' +
+        '</div>';
+
+    var powerUsedTemplate = '' +
+        '<fieldset data-role="controlgroup">' +
+            '<li data-swatch="{{swatch}}" class="ui-li ui-li-divider ui-btn ui-bar-{{swatch}} ui-corner-top ui-btn-up-undefined" data-role="list-divider" role="" data-form="ui-bar-{{swatch}}">{{powerType}} Power</li>' +
+            '<input id="powerUsed" name="powerUsed" type="checkbox">' +
+            '<label for="powerUsed">' +
+                'Power Used' +
+            '</label>' +
+        '</fieldset>'; 
+
     var toHitCollapseTemplate = '' +
         '<div data-role="collapsible" data-collapsed="false" data-content-theme="d">' +
             '<h3>' +
                 'ToHit: {{toHitText}}' +
             '</h3>' +
-            '<a id="btnRollToHit" data-role="button" data-theme="a" href="#">' +
+            '<a id="btnRollToHit" data-role="button" href="#">' +
                 'Roll ToHit' +
             '</a>' +
         '</div>'; 
@@ -43,13 +57,23 @@ var Controllers = (function(controllers) {
         if (power != null) {
             currentPower = power;
         }
-        $('#powerName').html(power.attr('name'));
+        var powerType = power.attr('powerType');
+        var swatch = 'd';
+        switch (powerType) {
+            case 'At-Will':
+                swatch = 'a';
+                break;
+            case 'Encounter':
+                swatch = 'b';
+                break;
+            case 'Daily':
+                swatch = 'c';
+                break;
+        }
+        $('#headerbar').replaceWith(Mustache.render(headerTemplate, {swatch:swatch, powerName:power.attr('name')}));
+        //$('#powerName').html(power.attr('name'));
 
         $('#powerDescription').html(power.attr('description'));
-
-        //var powerUsed = power.attr('powerUsed') || 'unused';
-        var powerUsed = power.attr('powerUsed');
-        $('#powerUsed').prop('checked', powerUsed).checkboxradio('refresh');
 
         var toHitText = Mustache.render(toHitCollapseTemplate, {toHitText: getToHitText()});
         $('#toHitCollapsable').html(toHitText);
@@ -71,41 +95,24 @@ var Controllers = (function(controllers) {
             rollDamage();
         });
 
+        $('#powerUsedContainer').html(Mustache.render(powerUsedTemplate, {swatch: swatch, powerType: powerType}));
+
         $('#pagePowerView').trigger('create');
 
-        /*
-        var conditionalDamage = power.attr('conditionalDamage');
-        $('#viewConditionalDamage').children().remove();
-        if (conditionalDamage != null && conditionalDamage.length > 0) {
-            $('#viewConditionalDamage').append('<legend>Conditional Damage:</legend>');
-            for (var i = 0; i < conditionalDamage.length; i++) {
-                var damage = conditionalDamage[i];
-                var chbxName = "chbxConditionalDamage"+i;
-                var html = '<input name="'+chbxName+'" id="'+chbxName+'" type="checkbox" />';
-                html += '<label for="chbxConditionalDamage'+i+'">'+damage.name+'  ::  '+damage.damage+'</label>';
-                $('#viewConditionalDamage').append(html);
-                $('#'+chbxName).data('damage', damage.damage);
-                $('#'+chbxName).click(function() {
-                    setDamageRangeText();
-                    pagePowerView.setRollType(rollType);
-                });
-            }
-        }
+        //var powerUsed = power.attr('powerUsed') || 'unused';
+        var powerUsed = power.attr('powerUsed');
+        $('#powerUsed').prop('checked', powerUsed).checkboxradio('refresh');
 
-        $('#rollTypeText').html('');
-        $('#rollValueText').html('');
-
-        setDamageRangeText();
-
-        */
+        $('#headerbar').removeClass('ui-bar-d').addClass('ui-bar-'+swatch);
     };
-    function getConditionalDamageValue(damageName) {
+
+    var getConditionalDamageValue = function(damageName) {
         var condDamage = _.find(currentPower.attr('conditionalDamage'), function(damage) {
             return damageName == damage.name;
         });
         return condDamage.damage;
     };
-    function getDamage() {
+    var getDamage = function() {
         var total = currentPower.attr('damage');
         $('input[name*="chbxConditionalDamage"]:checked').each(function() {
             var value = getConditionalDamageValue($(this).attr('id'));
@@ -124,7 +131,7 @@ var Controllers = (function(controllers) {
         });
         return total;
     };
-    function getDamageRangeText() {
+    var getDamageRangeText = function() {
         var damage = getDamage();
         var min = parsePrecedence(damage, 'min');
         var max = parsePrecedence(damage, 'max');

@@ -26,8 +26,8 @@
         <script src="javascript/pagePowerViewController.js"></script>
     </head>
     <body>
-        <div data-role="page" id="pageViewPowers">
-            <div data-theme="a" data-role="header">
+        <div data-role="page" id="pageViewPowers" data-theme="d">
+            <div data-theme="d" data-role="header">
                 <h3>
                     View Powers
                 </h3>
@@ -47,12 +47,12 @@
                         </li>
                     </ul>
                 </div>
-                <div data-role="collapsible-set" data-theme="" data-content-theme="">
+                <div data-role="collapsible-set" data-theme="" data-content-theme="d">
                     <div data-role="collapsible" data-collapsed="false">
                         <h3>
                             <div id="filtersListTitle">Filters</div>
                         </h3>
-                        <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                        <ul data-role="listview" data-divider-theme="d" data-inset="true">
                             <li data-role="list-divider" role="heading">
                                 Filter
                             </li>
@@ -89,7 +89,7 @@
                         </ul>
                     </div>
                 </div>
-                <div data-role="collapsible-set" data-theme="" data-content-theme="">
+                <div data-role="collapsible-set" data-theme="" data-content-theme="d">
                     <div data-role="collapsible" data-collapsed="false">
                         <h3>
                             <div id="powersListTitle">Powers</div>
@@ -200,26 +200,24 @@
 
 
         <div data-role="page" id="pagePowerView">
-            <div data-theme="a" data-role="header">
+            <div data-theme="d" data-role="header" id="headerbar">
                 <h3 id="powerName">
                     Header
                 </h3>
             </div>
 
             <div data-role="content">
-                <div id="checkboxes4" data-role="fieldcontain">
-                    <legend></legend>
-                    <input id="powerUsed" name="powerUsed" type="checkbox">
-                    <label for="powerUsed">
-                        Power Used
-                    </label>
-                </div>
-                <div>
-                    <p id="powerDescription"></p>
+                <div data-role="fieldcontain" id="powerUsedContainer"></div>
+
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <h4>Description:</h4>
+                        <p id="powerDescription" style="padding-left: 20px">Description</p>
+                    </fieldset>
                 </div>
                 <div data-role="collapsible-set" id="toHitCollapsable"></div>
                 <div data-role="collapsible-set" id="damageCollapsable"></div>
-                <a href="#" id="btnEditPower" data-role="button" data-icon="grid">Edit Power</a>
+                <a href="#" id="btnEditPower" data-role="button" data-icon="grid" class="powerType">Edit Power</a>
             </div>
 
         <script>
