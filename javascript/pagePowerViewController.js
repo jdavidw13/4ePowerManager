@@ -71,7 +71,6 @@ var Controllers = (function(controllers) {
                 break;
         }
         $('#headerbar').replaceWith(Mustache.render(headerTemplate, {swatch:swatch, powerName:power.attr('name')}));
-        //$('#powerName').html(power.attr('name'));
 
         $('#powerDescription').html(power.attr('description'));
 
