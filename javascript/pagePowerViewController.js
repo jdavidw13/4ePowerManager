@@ -100,8 +100,7 @@ var Controllers = (function(controllers) {
 
         $('#pagePowerView').trigger('create');
 
-        //var powerUsed = power.attr('powerUsed') || 'unused';
-        var powerUsed = power.attr('powerUsed') || false;
+        var powerUsed = power.isUsed();
         $('#powerUsed').prop('checked', powerUsed).checkboxradio('refresh');
 
         $('#headerbar').removeClass('ui-bar-d').addClass('ui-bar-'+swatch);

@@ -18,16 +18,18 @@ var Controllers = (function(controllers) {
             Power.each(appendPowers);
         }
         else if ('Used' == filter) {
-            Power.select(function() {
+            Power.getUsed().each(appendPowers);
+            /*Power.select(function() {
                 var used = this.attr('powerUsed');
                 return used == 'used';
-            }).each(appendPowers);
+            }).each(appendPowers);*/
         }
         else if ('Unused' == filter) {
-            Power.select(function() {
+            Power.getUnused().each(appendPowers);
+            /*Power.select(function() {
                 var used = this.attr('powerUsed');
                 return used == 'unused' || !used;
-            }).each(appendPowers);
+            }).each(appendPowers);*/
         }
         else if ('At-Will' == filter
                 || 'Encounter' == filter

@@ -30,6 +30,30 @@ var Power = (function()
         this.extend({
             createNew: function() {
                 return new Power({id: PowerId.getNextId()});
+            },
+
+            getUsed: function() {
+                return this.select(function() {
+                    return this.isUsed();
+                });
+            },
+
+            getUnused: function() {
+                return this.select(function() {
+                    return !this.isUsed();
+                });
+            }
+        });
+
+        this.include({
+            isUsed: function() {
+                var used = this.attr('powerUsed') || false;
+                return used;
+            },
+
+            setUsed: function(used) {
+                this.attr('powerUsed', used);
+                this.save();
             }
         });
     });
