@@ -50,6 +50,7 @@ var Controllers = (function(controllers) {
     var pagePowerView = {};
     var rollType = null;
     var currentPower = null;
+    var powerSwatch = null;
     var $conditionalDamage = null;
 
     pagePowerView.displayPower = function(id) {
@@ -70,6 +71,7 @@ var Controllers = (function(controllers) {
                 swatch = 'c';
                 break;
         }
+        powerSwatch = swatch;
         $('#headerbar').replaceWith(Mustache.render(headerTemplate, {swatch:swatch, powerName:power.attr('name')}));
 
         $('#powerDescription').html(power.attr('description'));
@@ -99,7 +101,7 @@ var Controllers = (function(controllers) {
         $('#pagePowerView').trigger('create');
 
         //var powerUsed = power.attr('powerUsed') || 'unused';
-        var powerUsed = power.attr('powerUsed');
+        var powerUsed = power.attr('powerUsed') || false;
         $('#powerUsed').prop('checked', powerUsed).checkboxradio('refresh');
 
         $('#headerbar').removeClass('ui-bar-d').addClass('ui-bar-'+swatch);
@@ -173,7 +175,8 @@ var Controllers = (function(controllers) {
             mode: 'blank',
             headerText: 'ToHit Roll',
             headerClose: true,
-            blankContent: content
+            blankContent: content,
+            themeHeader: powerSwatch
         });
     };
     var rollDamage = function() {
@@ -186,7 +189,8 @@ var Controllers = (function(controllers) {
             mode: 'blank',
             headerText: 'Damage Roll',
             headerClose: true,
-            blankContent: content
+            blankContent: content,
+            themeHeader: powerSwatch
         });
     };
     pagePowerView.setPowerUsed = function(val) {

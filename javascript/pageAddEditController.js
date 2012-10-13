@@ -37,7 +37,8 @@ var Controllers = (function(controllers) {
                     mode: 'button',
                     headerText: 'Damage...',
                     headerClose: true,
-                    buttons: buttons
+                    buttons: buttons,
+                    themeHeader: 'd'
                 });
             }
         };
@@ -149,6 +150,7 @@ var Controllers = (function(controllers) {
             headerText: 'Power Saved',
             headerClose: false,
             buttonPrompt: 'The power has been saved!',
+            themeHeader: 'd',
             buttons: {
                 'Ok': {
                     click: function() {}
@@ -162,6 +164,7 @@ var Controllers = (function(controllers) {
             headerText: 'Delete Power',
             headerClose: false,
             buttonPrompt: 'Delete this power?',
+            themeHeader: 'd',
             buttons: {
                 'Delete': {
                     click: function() {
