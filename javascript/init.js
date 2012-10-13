@@ -1,6 +1,5 @@
 var additionalDamageTrie = null;
 $(function() {
-    Power.load();
     Power.each(function() {
         var additionalDamage = this.attr('conditionalDamage');
         if (!additionalDamage) {
@@ -12,5 +11,4 @@ $(function() {
             setProperty(additionalDamageTrie, word, 'damage', additionalDamage[i].damage);
         }
     });
-    PowerId.load();
 });

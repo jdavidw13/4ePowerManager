@@ -1,3 +1,31 @@
+var CurrentPowersVersion = (function() {
+    var v = Model('currentVersion', function() {
+        this.persistence(Model.localStorage);
+        this.extend({
+            getCurrentPowersVersion: function() {
+                var version = CurrentPowersVersion.first();
+                if (version) {
+                    return version.attr('version');
+                }
+                return 1;
+            },
+
+            setCurrentPowersVersion: function(version) {
+                var vo = CurrentPowersVersion.first();
+                if (vo) {
+                    vo.attr('version', version);
+                }
+                else {
+                    vo = new CurrentPowersVersion({id: 0, version: version});
+                }
+                vo.save();
+            }
+        });
+    });
+    v.load();
+    return v;
+}());
+
 var PowerId = (function() {
     var p = Model('powerId', function() {
         this.persistence(Model.localStorage);
@@ -20,6 +48,7 @@ var PowerId = (function() {
             }
         });
     });
+    p.load();
     return p;
 }());
 
@@ -42,6 +71,35 @@ var Power = (function()
                 return this.select(function() {
                     return !this.isUsed();
                 });
+            },
+
+            updatePowersToLatestVersion: function() {
+                var currentVersion = 2;
+
+                var powersVersion = CurrentPowersVersion.getCurrentPowersVersion();
+                if (powersVersion >= currentVersion) return;
+
+                Power.each(function() {
+                    var version = this.attr('_version') || 1;
+                    if (version >= currentVersion) return;
+
+                    var nextVersion = version + 1;
+                    while (nextVersion <= currentVersion) {
+                        switch (nextVersion) {
+                            case 2:
+                                this.attr('_version', nextVersion);
+                                var powerUsed = this.attr('powerUsed') || 'unused';
+                                if ('used' == powerUsed) powerUsed = true;
+                                else powerUsed = false;
+                                this.attr('powerUsed', powerUsed);
+                                break;
+                        }
+
+                        nextVersion++;
+                    }
+                    this.save();
+                });
+                CurrentPowersVersion.setCurrentPowersVersion(currentVersion);
             }
         });
 
@@ -58,5 +116,6 @@ var Power = (function()
         });
     });
 
+    p.load();
     return p;
 }());

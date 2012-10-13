@@ -55,15 +55,18 @@ var Controllers = (function(controllers) {
     controllers.viewPowers = c;
     return controllers;
 }(Controllers || {}));
-$(function() {
+(function() {
     var clickFunc = function() { Controllers.viewPowers.displayList($.trim($(this).html())); };
-    $('#filterAll').click(clickFunc);
-    $('#filterUsed').click(clickFunc);
-    $('#filterUnused').click(clickFunc);
-    $('#filterAtWill').click(clickFunc);
-    $('#filterEncounter').click(clickFunc);
-    $('#filterDaily').click(clickFunc);
+    $('#pageViewPowers').live('pagecreate', function() {
+        Power.updatePowersToLatestVersion();
+        $('#filterAll').click(clickFunc);
+        $('#filterUsed').click(clickFunc);
+        $('#filterUnused').click(clickFunc);
+        $('#filterAtWill').click(clickFunc);
+        $('#filterEncounter').click(clickFunc);
+        $('#filterDaily').click(clickFunc);
+    });
     $('#pageViewPowers').live('pageshow', function() {
         Controllers.viewPowers.pageShow();
     });
-});
+}());
